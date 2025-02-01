@@ -14,7 +14,7 @@ YaraScan is a **FrontEnd Web Development** project that allows users to upload f
 
 ## Screenshots
 ### Home Page
-![Home Page](./screenshots/1.png)
+![Home Page](./yarascan/screenshots/1.png)
 
 ### Safe Scan Result
 ![Safe Result](./screenshots/8.png)
