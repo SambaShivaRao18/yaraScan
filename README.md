@@ -1,4 +1,4 @@
-# yara_Scan
+# yaraScan
 
 YaraScan is a **FrontEnd Web Development** project that allows users to upload files and scan them for possible malware signatures. The website provides a user-friendly interface and detailed scan results for better security analysis.
 
@@ -31,8 +31,8 @@ Before running the project, ensure you have the following installed:
 ## Installation & Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/SambaShivaRao18/yara_Scan.git
-   cd yara_Scan
+   git clone https://github.com/SambaShivaRao18/yaraScan.git
+   cd yaraScan
    ```
 2. Install dependencies:
    ```bash
