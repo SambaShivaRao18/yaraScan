@@ -1,0 +1,5 @@
+malware
+test_string
+rocess 'cmd.exe' attempting to modify 'system32' files
+Zeus Banking Trojan
+Locky Ransomware pattern

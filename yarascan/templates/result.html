@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Results</title>
+    <style>
+        body {
+            background-color: #181a20;
+            color: #d4d4dc;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 50px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: rgba(27, 30, 38, 0.9); /* Making the header semi-transparent */
+        }
+        .header h1 {
+            margin: 0;
+            color: #7fa2ff;
+        }
+        .header a {
+            color: #7fa2ff;
+            text-decoration: none;
+        }
+        .results {
+            background-color: rgba(35, 39, 50, 0.75); /* Making the result section semi-transparent */
+            padding: 50px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .result {
+            margin-bottom: 20px;
+        }
+        .result h1 {
+            margin: 0;
+            color: #ff0000; /* Red color for alert indication */
+        }
+        .result h2 {
+            margin: 0;
+            color: #ff0000; /* Red color for alert indication */
+        }
+        .result p {
+            margin: 5px 0;
+        }
+        .no-matches {
+            color: #00ff00; /* Green color for safe indication */
+            font-size: 24px;
+        }
+        .alert-bg {
+            background-image: url('/static/alertgbm2.jpg'); /* Direct URL to the alert image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .safe-bg {
+            background-image: url('/static/safebgm5.jpg'); /* Direct URL to the safe image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body id="body">
+    <div class="header">
+        <h1>Scan Results</h1>
+        <a href="/">Back to Home</a>
+    </div>
+    <div class="container" id="container">
+        <div class="results" id="results">
+            <!-- Results will be dynamically inserted here -->
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const results = JSON.parse(localStorage.getItem('scanResults'));
+            const resultsContainer = document.getElementById('results');
+            const body = document.getElementById('body');
+
+            console.log("Results from localStorage:", results); // Debugging line to check results
+
+            if (results && results.length > 0) {
+                // If any malware signature is found, add the alert background class
+                body.classList.add('alert-bg');
+
+                results.forEach(result => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'result';
+
+                    const alertMessage = document.createElement('h1');
+                    alertMessage.textContent = `Alert! MALWARE SIGNATURE MATCHED`;
+                    resultDiv.appendChild(alertMessage);
+
+                    const ruleMessage = document.createElement('h2');
+                    ruleMessage.textContent = `RULE: ${result.rule}`;
+                    resultDiv.appendChild(ruleMessage);
+
+                    console.log("Result strings:", result.strings); // Debugging line to check result strings
+
+                    if (result.strings && result.strings.length > 0) {
+                        const signatureMessage = document.createElement('h2');
+                        signatureMessage.textContent = `MATCHED SIGNATURE: ${result.strings.join(', ')}`;
+                        resultDiv.appendChild(signatureMessage);
+                    }
+
+                    resultsContainer.appendChild(resultDiv);
+                });
+            } else {
+                body.classList.add('safe-bg'); // Add safe background if no matches
+                resultsContainer.innerHTML = '<p class="no-matches"><h1 style="color:green">NO MALWARE SIGNATURE MATCHES FOUND!</h1></p>';
+            }
+        });
+    </script>
+</body>
+</html>

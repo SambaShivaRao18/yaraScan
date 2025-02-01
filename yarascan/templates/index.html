@@ -1,0 +1,253 @@
+<!-- HOME PAGE -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="">
+    <title>Yara based Malware Scanner</title>
+    <style>
+        body {
+            background-color: #181a20;
+            color: #d4d4dc;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 50px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: #1b1e26;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header h1 {
+            margin: 0;
+            color: #7fa2ff;
+        }
+        .header .logoimg {
+            height: 80px;
+            width: 100px;
+            border-radius: 30%;
+            cursor: pointer;
+        }
+        .header .auth-links {
+            display: flex;
+            gap: 20px;
+        }
+        .header a {
+            color: #7fa2ff;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+        .header a:hover {
+            transform: scale(1.05);
+        }
+        .main {
+            margin-top: 50px;
+        }
+        .tabs {
+            display: flexbox;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .tab {
+            margin: 0 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #7fa2ff;
+            border-bottom: 2px solid transparent;
+        }
+        .tab.active {
+            border-bottom: 2px solid #7fa2ff;
+        }
+        .file-upload {
+            background-color: #1b1e26;
+            padding: 50px;
+            border-radius: 10px;
+            display: inline-block;
+            text-align: center;
+        }
+        .file-upload input[type="file"] {
+            display: none;
+        }
+        .file-upload label {
+            background-color: #7fa2ff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .file-upload label:hover {
+            background-color: #5b79d0;
+            color: #e0e0e0;
+        }
+        .uploadbut {
+            background-color: #7fa2ff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .uploadbut:hover {
+            background-color: #5b79d0;
+            color: #e0e0e0;
+        }
+        .notice {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #7fa2ff;
+        }
+        .footer {
+            background-color: #121417;
+            padding: 20px;
+        }
+        .footer-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .footer-section a {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            background-color: #1b1e26;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 0 10px;
+            text-decoration: none;
+            color: #7fa2ff;
+            border: 0.5px solid #7fa2ff; /* Border before hover */
+        }
+        .footer-section a:hover {
+            transform: scale(1.05);
+            background-color: #7fa2ff;
+            color: #1b1e26;
+        }
+        .footer-section a:hover p {
+            color: #1b1e26;
+        }
+        .footer-section a img {
+            width: 200px;
+            height: 150px;
+            background-color: #7fa2ff;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+        .footer-section a p {
+            color: #7fa2ff;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        .banner {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: 110px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/"><img src="{{ url_for('static', filename='icon.jpg') }}" alt="logo" class="logoimg"></a>
+        <h1>YARASCAN</h1>
+        <div class="auth-links">
+            <a href="http://127.0.0.1:5000/contact">Contact Us</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="main">
+            <div class="tabs">
+                <p style="font-size: 20px;">Analyse suspicious files to detect malware and other breaches, automatically share them with the security community.</p>
+                <div class="image-container">
+                    <img src="{{ url_for('static', filename='scanfinal.png') }}" alt="graphic">
+                </div>
+                <div class="tab active">FILE</div>
+            </div>
+            <div class="file-upload" id="file-tab" style="display: block;">
+                <form id="upload-form" method="POST" action="/upload" enctype="multipart/form-data">
+                    <input type="file" id="file-upload" name="file">
+                    <label for="file-upload">Choose file</label>
+                    <button type="submit" class="uploadbut">Upload</button>
+                </form>
+            </div>
+            <div class="file-upload" id="url-tab" style="display: none;">
+                <input type="text" id="url-input" placeholder="Enter URL" style="padding: 10px; border-radius: 5px; border: 1px solid #7fa2ff; width: 70%;">
+                <button style="padding: 10px 20px; border-radius: 5px; background-color: #7fa2ff; color: white; border: none; cursor: pointer;">Submit</button>
+            </div>
+            <div class="file-upload" id="search-tab" style="display: none;">
+                <input type="text" id="search-input" placeholder="Enter search term" style="padding: 10px; border-radius: 5px; border: 0.5px solid #7fa2ff; width: 70%;">
+                <button style="padding: 10px 20px; border-radius: 5px; background-color: #7fa2ff; color: white; border: none; cursor: pointer;">Search</button>
+            </div><br><br>
+            <div class="notice">
+                By submitting data above, you are agreeing to our <a href="http://127.0.0.1:5000/terms" style="color: #7fa2ff;">Terms and Conditions.</a>
+            </div>
+        </div>
+    </div><br><br>
+    <div class="footer">
+        <div class="footer-section">
+            <a href="http://127.0.0.1:5000/about" class="banner">
+                <p>About Us</p>
+                <p>Know more about YaraScan website</p>
+            </a>
+            <a href="http://127.0.0.1:5000/guide" class="banner">
+                <p>Guide</p>
+                <p>know steps to scan a file using</p>
+            </a>
+            <a href="http://127.0.0.1:5000/learn" class="banner">
+                <p>LearnYara</p>
+                <p>know more about Yara Framework</p>
+            </a>
+        </div>
+    </div>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+    
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    localStorage.setItem('scanResults', JSON.stringify(data.matches));
+                    window.location.href = '/result';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

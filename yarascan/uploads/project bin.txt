@@ -1,0 +1,220 @@
+//inde.html before adding footer section 
+
+<!DOCTYPE html>
+<!-- saved from url=(0049)https://app.onecompiler.com/42gcvpkbg_42gsccxas/# -->
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="">
+    <title>Yara based Malware Scanner</title>
+    <style>
+        
+        body {
+            background-color: #181a20;
+            color: #d4d4dc;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 50px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: #1b1e26;
+        }
+        .header h1 {
+            margin: 0;
+            color: #7fa2ff;
+        }
+        .header a {
+            color: #7fa2ff;
+            text-decoration: none;
+        }
+        .main {
+            margin-top: 50px;
+        }
+        .tabs {
+            display: flexbox;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .tab {
+            margin: 0 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #7fa2ff;
+            border-bottom: 2px solid transparent;
+        }
+        .tab.active {
+            border-bottom: 2px solid #7fa2ff;
+        }
+        .file-upload {
+            background-color: #1b1e26;
+            padding: 50px;
+            border-radius: 10px;
+            display: inline-block;
+            text-align: center;
+        }
+        .file-upload input[type="file"] {
+            display: none;
+        }
+        .file-upload label {
+            background-color: #7fa2ff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .notice {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #7fa2ff;
+        }
+        .logoimg{
+        height: 80px;
+        width: 100px;
+        border-radius: 30%;
+        cursor: pointer;
+       }
+       .uploadbut{
+        background-color: #7fa2ff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+       }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='icon.jpg') }}" alt="logo" class="logoimg">
+        <h1>YARASCAN</h1>
+        <a href="http://127.0.0.1:5000/sign">Sign in</a>
+        <a href="http://127.0.0.1:5000/signup">Sign Up</a>
+    </div>
+    <div class="container">
+        <div class="main">
+            <div class="tabs">
+                <p style="font-size: 20px;">Analyse suspicious files to detect malware and other breaches, automatically share them with the security community.</p>
+                <div class="tab active">FILE</div>
+            </div>
+            <div class="file-upload" id="file-tab" style="display: block;">
+                <form id="upload-form" method="POST" action="/upload" enctype="multipart/form-data">
+                    <input type="file" id="file-upload" name="file">
+                    <label for="file-upload">Choose file</label>
+                    <button type="submit" class="uploadbut">Upload</button>
+                </form>
+            </div>
+            <div class="file-upload" id="url-tab" style="display: none;">
+                <input type="text" id="url-input" placeholder="Enter URL" style="padding: 10px; border-radius: 5px; border: 1px solid #7fa2ff; width: 70%;">
+                <button style="padding: 10px 20px; border-radius: 5px; background-color: #7fa2ff; color: white; border: none; cursor: pointer;">Submit</button>
+            </div>
+            <div class="file-upload" id="search-tab" style="display: none;">
+                <input type="text" id="search-input" placeholder="Enter search term" style="padding: 10px; border-radius: 5px; border: 1px solid #7fa2ff; width: 70%;">
+                <button style="padding: 10px 20px; border-radius: 5px; background-color: #7fa2ff; color: white; border: none; cursor: pointer;">Search</button>
+            </div>
+            <div class="notice">
+                By submitting data above, you are agreeing to our <a href="http://127.0.0.1:5000/terms" style="color: #7fa2ff;">Terms and Conditions.</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+    
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    localStorage.setItem('scanResults', JSON.stringify(data.matches));
+                    window.location.href = '/result';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+    
+           
+</body>
+</html>
+
+/// app.py before updation 
+
+
+from flask import Flask, request, render_template, jsonify
+import yara
+import os
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['YARA_RULES_FOLDER'] = 'yara_rules'
+app.secret_key = 'supersecretkey'  # Replace with a secure key
+
+# Ensure the necessary folders exist
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(app.config['YARA_RULES_FOLDER'], exist_ok=True)
+
+# Load YARA rules from the yara_rules folder
+def load_yara_rules():
+    rules = yara.compile(filepath=os.path.join(app.config['YARA_RULES_FOLDER'], 'myrules.yar'))
+    return rules
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify(error='No file part'), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify(error='No selected file'), 400
+    
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(file_path)
+    
+    # Load the YARA rules
+    rules = load_yara_rules()
+    
+    # Scan the file with YARA
+    matches = rules.match(file_path)
+    
+    # Convert matches to a list of dictionaries
+    matches_list = [{'rule': match.rule, 'meta': match.meta} for match in matches]
+    
+    return jsonify(matches=matches_list)
+
+@app.route('/sign')
+def sign():
+    return render_template('sign.html')
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@app.route('/result')
+def result():
+    return render_template('result.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)

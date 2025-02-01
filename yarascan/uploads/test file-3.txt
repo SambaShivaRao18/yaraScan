@@ -1,0 +1,2 @@
+cmd.exe' attempting to modify 'system32' files
+malware
