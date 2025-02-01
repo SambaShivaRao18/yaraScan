@@ -20,7 +20,8 @@ YaraScan is a **FrontEnd Web Development** project that allows users to upload f
 ![Safe Result](./yarascan/screenshots/8.png)
 
 ### Malware Detected
-![Malware Found](./yarascan/screenshots/7(1).png)
+![Malware Found](./yarascan/screenshots/7%20%281%29.png)
+
 
 ## Prerequisites
 Before running the project, ensure you have the following installed:
